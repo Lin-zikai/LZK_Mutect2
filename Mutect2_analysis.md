@@ -60,3 +60,43 @@ chr2
 chrX
 ```
 
+
+
+
+# 一次分析多个样本
+
+参考脚本格式
+``` bash 
+#!/bin/bash
+
+# 设置参考基因组路径
+reference="/data/lzk/hmk/GRCH38/GRCh38_full_analysis_set_plus_decoy_hla.fa"
+
+# 设置输出路径
+output="/data/lzk/hmk/sandbox/unfiltered_somatic.vcf.gz"
+
+# 设置 germline 资源文件路径
+germline_resource="/data/lzk/hmk/gnomAD/gnomad.exomes.v4.1.sites.chr1.vcf.bgz"
+
+# 查找所有 CRAM 文件
+cram_files=$(ls /data/lzk/hmk/crams/*.cram)
+
+# 生成 Mutect2 命令
+cmd="gatk Mutect2 -R $reference --germline-resource $germline_resource -O $output"
+
+# 添加所有 CRAM 文件
+for cram in $cram_files; do
+    cmd="$cmd -I $cram"
+done
+
+# 运行生成的命令
+echo "Running command: $cmd"
+$cmd
+
+```
+
+
+
+
+
+
